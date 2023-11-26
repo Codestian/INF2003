@@ -18,15 +18,13 @@ def showregister():
 
 @app.route('/register', methods=['POST'])
 def register():
-    # Extract form data
-    email = request.form['email']
-    username = request.form['username']
-    password = request.form['password']
-    response = db.register_user(email,username,password)
-    flash(response)
-
-    # Redirect to another page upon registration attempt
-    return redirect('/register')
+    if request.method=='POST':
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+        response = db.register_user(email,username,password)
+        # Redirect to another page upon registration attempt
+        return redirect('/')
     
 
 @app.route('/call_db_function', methods=['POST'])
@@ -71,11 +69,7 @@ def dashboard():
 
 @app.route('/assets')
 def show_assets():
-    # Assuming you have a function to get the current user's id
-    
 
-    # Fetch assets from the database for this user
-    # This function should return a list of asset objects or dictionaries
     assets = db.get_assets_for_user(session['id'])
     
     
@@ -145,27 +139,26 @@ def add_income():
 @app.route('/save_income', methods=['POST'])
 def save_income():
     try:
-        # Extract form data
+
         name = request.form['name']
         value = request.form['value']
-        type_name = request.form['type']  # This should be the descriptive text, not ID
+        type_name = request.form['type']  
         date_purchased = request.form['datepurchased']
-        frequency_name = request.form['frequency']  # This should be the descriptive text, not ID
+        frequency_name = request.form['frequency']  
         next_due = request.form['nextdue']
 
-        # Debug prints
-        print(f"Received form data: {name}, {value}, {type_name}, {date_purchased}, {frequency_name}, {next_due}")
+        
+        
 
-        # Add income to the database
+        
         db.add_income(name, value, type_name, date_purchased,session['id'], frequency_name, next_due)
 
-        # If no error occurred, redirect
+        
         return redirect('/incomeandexpenses')
     except Exception as e:
-        # Print the error to the console and potentially log to a file or database
+        
         print(f"An error occurred: {e}")
-        # Depending on your error handling, you may want to inform the user
-        # Optionally, you could return a different response or render a template with an error message
+        
         return str(e), 500
 
 @app.route('/delete_income', methods=['POST'])
@@ -215,22 +208,22 @@ def delete_expense():
 
 @app.route('/predict_income_expenses', methods=['GET'])
 def predict_income_expenses():
-    expenses = db.predict_income_expenses()
+    expenses = db.predict_income_expenses(session['id'])
     return expenses
 
 @app.route('/overall_distribution_of_expenses', methods=['GET'])
 def overall_distribution_of_expenses():
-    expenses = db.overall_distribution_of_expenses()
+    expenses = db.overall_distribution_of_expenses(session['id'])
     return expenses
 
 @app.route('/overall_distribution_of_income', methods=['GET'])
 def overall_distribution_of_income():
-    expenses = db.overall_distribution_of_income()
+    expenses = db.overall_distribution_of_income(session['id'])
     return expenses
 
 @app.route('/overall_distribution_of_portfolio', methods=['GET'])
 def overall_distribution_of_portfolio():
-    expenses = db.overall_distribution_of_portfolio()
+    expenses = db.overall_distribution_of_portfolio(session['id'])
     return expenses
 
 @app.route('/get_portfolio_value', methods=['GET'])
@@ -240,12 +233,12 @@ def get_portfolio_value():
 
 @app.route('/most_recently_added', methods=['GET'])
 def most_recently_added():
-    data=db.most_recently_added()
+    data=db.most_recently_added(session['id'])
     return data
 
 if __name__ == '__main__':
-    app.run(port=8000, debug=True)
+    app.run(port=5000, debug=True)
+    print("is this here?")
 
-    print(db.printallincome())
 
 

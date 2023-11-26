@@ -512,143 +512,161 @@ def insert_transaction_types():
     cur.close()
     conn.close()
 
-def predict_income_expenses():
-    conn= get_db_connection()
+def predict_income_expenses(userid):
+    conn = get_db_connection()
     cur = conn.cursor()
 
     cur.execute("""
         WITH predict_data AS (
-    SELECT
-        nextdue,
-        SUM(value) AS net_value
-    FROM
-        (
+            SELECT
+                nextdue,
+                SUM(value) AS net_value
+            FROM
+                (
+                SELECT
+                    nextdue,
+                    value
+                FROM
+                    income
+                WHERE
+                    userid = ?
+
+                UNION ALL
+
+                SELECT
+                    nextdue,
+                    -value
+                FROM
+                    expenses
+                WHERE
+                    userid = ?
+                ) AS combined
+            GROUP BY
+                nextdue
+        )
+
         SELECT
             nextdue,
-            value
+            SUM(net_value) OVER (ORDER BY nextdue) AS running_net_value
         FROM
-            income
-
-        UNION ALL
-
-        SELECT
-            nextdue,
-            -value
-        FROM
-            expenses
-        ) AS combined
-    GROUP BY
-        nextdue
-    )
-
-    SELECT
-    nextdue,
-    SUM(net_value) OVER (ORDER BY nextdue) AS running_net_value
-    FROM
-    predict_data
-    WHERE
-    CAST(STRFTIME("%m", nextdue) AS INTEGER) = (
-        SELECT
-        CAST(STRFTIME("%m", MIN(nextdue)) AS INTEGER)
-        FROM
-        predict_data)
-    ORDER BY
-    nextdue""")
+            predict_data
+        WHERE
+            CAST(STRFTIME("%m", nextdue) AS INTEGER) = (
+                SELECT
+                CAST(STRFTIME("%m", MIN(nextdue)) AS INTEGER)
+                FROM
+                predict_data)
+        ORDER BY
+            nextdue
+    """, (userid, userid))
 
     data = cur.fetchall()
     cur.close()
     conn.close()
     return data
 
-
-def overall_distribution_of_expenses():
-    conn= get_db_connection()
+def overall_distribution_of_expenses(userid):
+    conn = get_db_connection()
     cur = conn.cursor()
 
     cur.execute("""
-    SELECT
-    e.transactionid,
-    tr.type AS category,
-    SUM(e.value) AS total_value
-    FROM
-    expenses e
-    JOIN
-    transactions tr ON e.transactionid = tr.transactionid
-    GROUP BY
-    e.transactionid, tr.type;
-    """)
+        SELECT
+            e.transactionid,
+            tr.type AS category,
+            SUM(e.value) AS total_value
+        FROM
+            expenses e
+        JOIN
+            transactions tr ON e.transactionid = tr.transactionid
+        WHERE
+            e.userid = ?
+        GROUP BY
+            e.transactionid, tr.type;
+    """, (userid,))
 
     data = cur.fetchall()
+    cur.close()
+    conn.close()
     return data
 
-def overall_distribution_of_income():
-    conn= get_db_connection()
+def overall_distribution_of_income(userid):
+    conn = get_db_connection()
     cur = conn.cursor()
 
     cur.execute("""
-    SELECT
-    i.transactionid,
-    tr.type AS category,
-    SUM(i.value) AS total_value
-    FROM
-    income i
-    JOIN
-    transactions tr ON i.transactionid = tr.transactionid
-    GROUP BY
-    i.transactionid, tr.type;
-    """)
+        SELECT
+            i.transactionid,
+            tr.type AS category,
+            SUM(i.value) AS total_value
+        FROM
+            income i
+        JOIN
+            transactions tr ON i.transactionid = tr.transactionid
+        WHERE
+            i.userid = ?
+        GROUP BY
+            i.transactionid, tr.type;
+    """, (userid,))
 
     data = cur.fetchall()
+    cur.close()
+    conn.close()
     return data
 
-def overall_distribution_of_portfolio():
-    conn= get_db_connection()
+def overall_distribution_of_portfolio(userid):
+    conn = get_db_connection()
     cur = conn.cursor()
 
     cur.execute("""
-    SELECT
-  a.assettypeid,
-  at.type,
-  SUM(value * amount) AS total_value,
-  (SUM(value * amount) / SUM(value * amount) OVER ()) * 100 AS percentage
-FROM
-  assets a
-JOIN
-  assettype at ON a.assettypeid = at.assettypeid
-GROUP BY
-  a.assettypeid, at.type;
-     """)
+        SELECT
+            a.assettypeid,
+            at.type,
+            SUM(value * amount) AS total_value,
+            (SUM(value * amount) / SUM(value * amount) OVER ()) * 100 AS percentage
+        FROM
+            assets a
+        JOIN
+            assettype at ON a.assettypeid = at.assettypeid
+        WHERE
+            a.userid = ?
+        GROUP BY
+            a.assettypeid, at.type;
+    """, (userid,))
 
     data = cur.fetchall()
+    cur.close()
+    conn.close()
     return data
 
-def most_recently_added():
-    conn= get_db_connection()
+def most_recently_added(userid):
+    conn = get_db_connection()
     cur = conn.cursor()
 
     cur.execute("""
-    WITH recent_add AS (
-    SELECT 'income' AS category, name, value, datepurchased 
-    FROM income
-    WHERE datepurchased = (SELECT MAX(datepurchased ) FROM income)
+        WITH recent_add AS (
+            SELECT 'income' AS category, name, value, datepurchased 
+            FROM income
+            WHERE userid = ? AND datepurchased = (SELECT MAX(datepurchased ) FROM income WHERE userid = ?)
 
-    UNION ALL
+            UNION ALL
 
-    SELECT 'expenses' AS category, name, value, datepurchased
-    FROM expenses
-    WHERE datepurchased = (SELECT MAX(datepurchased) FROM expenses)
+            SELECT 'expenses' AS category, name, value, datepurchased
+            FROM expenses
+            WHERE userid = ? AND datepurchased = (SELECT MAX(datepurchased) FROM expenses WHERE userid = ?)
 
-    UNION ALL
+            UNION ALL
 
-    SELECT 'assets' AS category, name, value, date
-    FROM assets
-    WHERE date= (SELECT MAX(date) FROM assets)
-)
+            SELECT 'assets' AS category, name, value, date
+            FROM assets
+            WHERE userid = ? AND date = (SELECT MAX(date) FROM assets WHERE userid = ?)
+        )
 
-SELECT category, name, value, datepurchased
-FROM recent_add
-ORDER BY datepurchased DESC
-""")
+        SELECT category, name, value, datepurchased
+        FROM recent_add
+        ORDER BY datepurchased DESC
+    """, (userid, userid, userid, userid, userid, userid))
 
     data = cur.fetchall()
+    cur.close()
+    conn.close()
     return data
