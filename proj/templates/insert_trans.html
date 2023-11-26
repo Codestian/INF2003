@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask and SQLite </title>
+</head>
+<body>
+<form method="POST">
+    <label>Enter Account ID:</label>
+    <input name="accountid" placeholder="Enter Account ID" required type="number"><br/>
+    <label for="type">Choose a type:</label>
+    <select id="type" name="type">
+        <option value="income">Income</option>
+        <option value="expenses">Expenses</option>
+    </select>
+    <label>Enter Category:</label>
+    <input name="category" placeholder="Groceries, Rent, Salary, etc." required type="text"><br/>
+    <label>Enter Amount:</label>
+    <input name="amount" placeholder="50, 100, etc, " required step=".01" type="number"><br/>
+    <label>Enter Date:</label>
+    <input name="date" required type="date"><br/>
+    <input type="submit" value="submit"/><br/>
+</form>
+</body>
+</html>

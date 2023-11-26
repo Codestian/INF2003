@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Income</title>
+    <style>
+        /* Add your CSS styling here */
+        .form-group {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Add New Income</h2>
+    <form action="/save_income" method="post">
+        <div class="form-group">
+            <label for="income-name">Income Name:</label>
+            <input type="text" id="income-name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="income-value">Value:</label>
+            <input type="number" id="income-value" name="value" required>
+        </div>
+
+        <div class="form-group">
+            <label for="income-type">Type:</label>
+            <select id="income-type" name="type">
+                <!-- Options will be populated from the server -->
+                {% for transaction in income_types %}
+                    <option value="{{ transaction.type }}">{{ transaction.type }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="date-purchased">Date Purchased:</label>
+            <input type="date" id="date-purchased" name="datepurchased" required>
+        </div>
+
+        <div class="form-group">
+            <label for="frequency">Frequency:</label>
+            <select id="frequency" name="frequency">
+                {% for freq in frequencies %}
+                    <!-- Ensure that the option value attribute contains the descriptive freqtype -->
+                    <option value="{{ freq.freqtype }}">{{ freq.freqtype }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="next-due">Next Due:</label>
+            <input type="date" id="next-due" name="nextdue" required>
+        </div>
+
+        <input type="submit" value="Add Income">
+    </form>
+</body>
+</html>

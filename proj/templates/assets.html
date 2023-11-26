@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Assets</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="container mt-4">
+        <div class="mb-3">
+            <button class="btn btn-primary" onclick="location.href='/addasset'">Add Asset</button>
+            <button class="btn btn-secondary" onclick="location.href='/filter_highest_assets'">Filter by Highest Assets</button>
+        </div>
+        <h1>Your Assets</h1>
+
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Value</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Purchase Price</th>
+                    <th>Total Value</th>
+                    <th>Profit (%)</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for asset in assets %}
+                <tr>
+                    <td>{{ asset[1] }}</td> <!-- Name -->
+                    <td>{{ asset[2] }}</td> <!-- Value -->
+                    <td>{{ asset[3] }}</td> <!-- Amount -->
+                    <td>{{ 'Crypto' if asset[4] == 0 else 'Stock' }}</td> <!-- Type -->
+                    <td>{{ asset[5] }}</td> <!-- Date -->
+                    <td>{{ asset[7] }}</td> <!-- Purchase Price -->
+                    <td>{{ asset[8] }}</td> <!-- Total Value -->
+                    <td>{{ "%.2f"|format(asset[9]) }}</td> <!-- Profit Percentage -->
+                    <td>
+                        <form action="/delete_asset" method="post">
+                            <input type="hidden" name="asset_id" value="{{ asset[0] }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

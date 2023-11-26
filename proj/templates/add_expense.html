@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Expense</title>
+    <style>
+        .form-group {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Add New Expense</h2>
+    <form action="/save_expense" method="post">
+        <div class="form-group">
+            <label for="expense-name">Expense Name:</label>
+            <input type="text" id="expense-name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="expense-value">Value:</label>
+            <input type="number" id="expense-value" name="value" required>
+        </div>
+
+        <div class="form-group">
+            <label for="expense-type">Type:</label>
+            <select id="expense-type" name="type">
+                <!-- Options will be populated from the server -->
+                {% for transaction in expense_types %}
+                    <option value="{{ transaction.type }}">{{ transaction.type }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="date-occurred">Date Occurred:</label>
+            <input type="date" id="date-occurred" name="datepurchased" required>
+        </div>
+
+        <div class="form-group">
+            <label for="expense-frequency">Frequency:</label>
+            <select id="expense-frequency" name="frequency">
+                {% for freq in frequencies %}
+                    <option value="{{ freq.freqtype }}">{{ freq.freqtype }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="next-due">Next Due:</label>
+            <input type="date" id="next-due" name="nextdue" required>
+        </div>
+
+        <input type="submit" value="Add Expense">
+    </form>
+</body>
+</html>

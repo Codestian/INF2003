@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dashboard</title>
+    <style>
+      /* Add your CSS styling here */
+    </style>
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+    <!-- Include the Navbar -->
+
+    <h1>Welcome to the Dashboard</h1>
+
+    <p id="portfolioValue">Current Portfolio value</p>
+
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-6">
+          <canvas id="myChart3"></canvas>
+        </div>
+        <div class="col-md-6">
+          <canvas id="myChart2"></canvas>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <canvas id="myChart1"></canvas>
+        </div>
+        <div class="col-md-6">
+          <canvas id="myChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+
+fetch("/get_portfolio_value")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+            console.log(data[0][0]);
+        const portfolioValue = document.querySelector('#portfolioValue');
+
+        portfolioValue.innerHTML = 'Current Portfolio value: ' + data[0][0];
+
+        })
+        .catch((error) => {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        });
+
+
+      fetch("/predict_income_expenses")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+
+          const chartData = {
+            labels: data.map((point) => point[0]),
+            datasets: [
+              {
+                label: "My Dataset",
+                data: data.map((point) => point[1]),
+                fill: false,
+                borderColor: "rgb(75, 192, 192)",
+                tension: 0.1,
+              },
+            ],
+          };
+
+          // Configuration options
+          const config = {
+            type: "line",
+            data: chartData,
+            options: {},
+          };
+
+          // Render the chart
+          const myChart = new Chart(document.getElementById("myChart"), config);
+        })
+        .catch((error) => {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        });
+
+      fetch("/overall_distribution_of_expenses")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+
+          const labels = data.map((item) => item[1]);
+          const values = data.map((item) => item[2]);
+          // Create the dataset for the pie chart
+          const pieData = {
+            labels: labels,
+            datasets: [
+              {
+                data: values,
+                backgroundColor: ["red", "blue", "green"], // Assign colors as needed
+              },
+            ],
+          };
+          // Config for the pie chart
+          const config = {
+            type: "pie",
+            data: pieData,
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+                title: {
+                  display: true,
+                  text: "Overall distribution of expenses",
+                },
+              },
+            },
+          };
+
+          // Initialize the chart
+          new Chart(document.getElementById("myChart1"), config);
+        })
+        .catch((error) => {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        });
+
+      fetch("/overall_distribution_of_income")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+
+          const labels = data.map((item) => item[1]);
+          const values = data.map((item) => item[2]);
+          // Create the dataset for the pie chart
+          const pieData = {
+            labels: labels,
+            datasets: [
+              {
+                data: values,
+                backgroundColor: ["red", "blue", "green"], // Assign colors as needed
+              },
+            ],
+          };
+          // Config for the pie chart
+          const config = {
+            type: "pie",
+            data: pieData,
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+                title: {
+                  display: true,
+                  text: "Overall distribution of income",
+                },
+              },
+            },
+          };
+
+          // Initialize the chart
+          new Chart(document.getElementById("myChart2"), config);
+        })
+        .catch((error) => {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        });
+
+      fetch("/overall_distribution_of_portfolio")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+
+          const labels = data.map((item) => item[1]);
+          const values = data.map((item) => item[2]);
+          // Create the dataset for the pie chart
+          const pieData = {
+            labels: labels,
+            datasets: [
+              {
+                data: values,
+                backgroundColor: ["red", "blue", "green"], // Assign colors as needed
+              },
+            ],
+          };
+          // Config for the pie chart
+          const config = {
+            type: "pie",
+            data: pieData,
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+                title: {
+                  display: true,
+                  text: "Overall distribution of portfolio",
+                },
+              },
+            },
+          };
+
+          // Initialize the chart
+          new Chart(document.getElementById("myChart3"), config);
+        })
+        .catch((error) => {
+          console.error(
+            "There has been a problem with your fetch operation:",
+            error
+          );
+        });
+    </script>
+  </body>
+</html>
