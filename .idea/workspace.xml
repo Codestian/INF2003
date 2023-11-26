@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="69c1a27c-c3c9-4225-aa83-bb3319fe731f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/proj/DBoperations.py" beforeDir="false" afterPath="$PROJECT_DIR$/proj/DBoperations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proj/index.py" beforeDir="false" afterPath="$PROJECT_DIR$/proj/index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proj/templates/incomeandexpenses.html" beforeDir="false" afterPath="$PROJECT_DIR$/proj/templates/incomeandexpenses.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proj/test.db" beforeDir="false" afterPath="$PROJECT_DIR$/proj/test.db" afterDir="false" />
-    </list>
+    <list default="true" id="69c1a27c-c3c9-4225-aa83-bb3319fe731f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
