@@ -3,12 +3,12 @@
   <head>
     <title>Dashboard</title>
     <style>
-      /* Add your CSS styling here */
+      
     </style>
   </head>
   <body>
     {% include 'navbar.html' %}
-    <!-- Include the Navbar -->
+    
 
     <h1>Welcome to the Dashboard</h1>
 
@@ -68,6 +68,7 @@ fetch("/get_portfolio_value")
         })
         .then((data) => {
           console.log(data);
+          
 
           const chartData = {
             labels: data.map((point) => point[0]),
@@ -82,14 +83,14 @@ fetch("/get_portfolio_value")
             ],
           };
 
-          // Configuration options
+          
           const config = {
             type: "line",
             data: chartData,
             options: {},
           };
 
-          // Render the chart
+          
           const myChart = new Chart(document.getElementById("myChart"), config);
         })
         .catch((error) => {
@@ -111,17 +112,17 @@ fetch("/get_portfolio_value")
 
           const labels = data.map((item) => item[1]);
           const values = data.map((item) => item[2]);
-          // Create the dataset for the pie chart
+         
           const pieData = {
             labels: labels,
             datasets: [
               {
                 data: values,
-                backgroundColor: ["red", "blue", "green"], // Assign colors as needed
+                backgroundColor: ["red", "blue", "green"], 
               },
             ],
           };
-          // Config for the pie chart
+          
           const config = {
             type: "pie",
             data: pieData,
@@ -139,7 +140,7 @@ fetch("/get_portfolio_value")
             },
           };
 
-          // Initialize the chart
+          
           new Chart(document.getElementById("myChart1"), config);
         })
         .catch((error) => {
@@ -159,19 +160,20 @@ fetch("/get_portfolio_value")
         .then((data) => {
           console.log(data);
 
+
           const labels = data.map((item) => item[1]);
           const values = data.map((item) => item[2]);
-          // Create the dataset for the pie chart
+          
           const pieData = {
             labels: labels,
             datasets: [
               {
                 data: values,
-                backgroundColor: ["red", "blue", "green"], // Assign colors as needed
+                backgroundColor: ["red", "blue", "green"],
               },
             ],
           };
-          // Config for the pie chart
+          
           const config = {
             type: "pie",
             data: pieData,
@@ -189,7 +191,7 @@ fetch("/get_portfolio_value")
             },
           };
 
-          // Initialize the chart
+          
           new Chart(document.getElementById("myChart2"), config);
         })
         .catch((error) => {
@@ -211,17 +213,17 @@ fetch("/get_portfolio_value")
 
           const labels = data.map((item) => item[1]);
           const values = data.map((item) => item[2]);
-          // Create the dataset for the pie chart
+          
           const pieData = {
             labels: labels,
             datasets: [
               {
                 data: values,
-                backgroundColor: ["red", "blue", "green"], // Assign colors as needed
+                backgroundColor: ["red", "blue", "green"], 
               },
             ],
           };
-          // Config for the pie chart
+          
           const config = {
             type: "pie",
             data: pieData,
@@ -239,7 +241,7 @@ fetch("/get_portfolio_value")
             },
           };
 
-          // Initialize the chart
+          
           new Chart(document.getElementById("myChart3"), config);
         })
         .catch((error) => {

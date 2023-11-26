@@ -23,20 +23,10 @@ def register():
         username = request.form['username']
         password = request.form['password']
         response = db.register_user(email,username,password)
-        # Redirect to another page upon registration attempt
+        
         return redirect('/')
     
 
-@app.route('/call_db_function', methods=['POST'])
-def call_db_function():
-    # Call the desired function from dboperation.py
-   # db.delete_tables()
-   #
-   #  db.create_tables()
-
-    
-
-    return redirect('/') 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -92,7 +82,7 @@ def submit_asset():
     amount = request.form['amount']
     price = request.form['price']
 
-    # Determine the asset type ID and call the appropriate price function
+    
     if asset_type == 'crypto':
         asset_type_id = 1
         retrieve = ndb.retrieve_price(id_or_ticker)
@@ -104,34 +94,34 @@ def submit_asset():
         asset_type_id = 2
         value = ndb.getStockPrice(id_or_ticker)
 
-    # Use the current date for the date purchased
+    
     date_purchased = datetime.now()
     db.add_new_asset(id_or_ticker,value,amount,asset_type_id,date_purchased,session['id'],price)
     
 
-    return redirect('/assets')  # Redirect to dashboard or appropriate page
+    return redirect('/assets')  
 
 @app.route('/delete_asset', methods=['POST'])
 def delete_asset():
     asset_id = request.form['asset_id']
     db.delete_asset(asset_id)
 
-    return redirect('/assets')  # Redirect back to the assets page
+    return redirect('/assets')  
 
 @app.route('/incomeandexpenses')
 def view_income_and_expenses():
-    # Fetch income data
-    incomes = db.get_all_incomes(session['id'])  # Replace with your actual function to fetch income data
+    
+    incomes = db.get_all_incomes(session['id'])  
 
-    # Fetch expense data
-    expenses = db.get_all_expenses(session['id'])  # Replace with your actual function to fetch expense data
+    
+    expenses = db.get_all_expenses(session['id'])  
     
     return render_template('incomeandexpenses.html', incomes=incomes, expenses=expenses)
 
 @app.route('/add_income', methods=['GET', 'POST'])
 def add_income():
-    income_types = db.get_transaction_types('income')  # Fetch income types from transactions table
-    frequencies = db.get_frequencies()  # Fetch frequencies from frequency table
+    income_types = db.get_transaction_types('income')  
+    frequencies = db.get_frequencies()  
         
 
     return render_template('add_income.html', income_types=income_types, frequencies=frequencies)
@@ -152,10 +142,10 @@ def show_alphabetical():
 @app.route('/update_nextdue', methods=['GET', 'POST'])
 def update_nextdue():
     db.update_nextdue()
-    incomes = db.get_all_incomes(session['id'])  # Replace with your actual function to fetch income data
+    incomes = db.get_all_incomes(session['id']) 
 
-    # Fetch expense data
-    expenses = db.get_all_expenses(session['id'])  # Replace with your actual function to fetch expense data
+    
+    expenses = db.get_all_expenses(session['id'])  
 
     return render_template('incomeandexpenses.html', incomes=incomes, expenses=expenses)
 @app.route('/save_income', methods=['POST'])
@@ -187,50 +177,47 @@ def save_income():
 def delete_income():
     income_id = request.form['income_id']
     db.delete_income(income_id)
-    return redirect('/incomeandexpenses')  # Replace with your actual route for displaying incomes
+    return redirect('/incomeandexpenses')  
     
 @app.route('/add_expense', methods=['GET', 'POST'])
 def add_expense():
-    expense_types = db.get_transaction_types('expense')  # Fetch income types from transactions table
+    expense_types = db.get_transaction_types('expense') 
     frequencies = db.get_frequencies()
     return render_template('add_expense.html',expense_types=expense_types,frequencies=frequencies)
 
 @app.route('/save_expense', methods=['POST'])
 def save_expense():
     try:
-        # Extract form data
+        
         name = request.form['name']
         value = request.form['value']
-        type_name = request.form['type']  # This should be the descriptive text, not ID
-        date_occurred = request.form['datepurchased']  # Renamed to reflect expense context
-        frequency_name = request.form['frequency']  # This should be the descriptive text, not ID
+        type_name = request.form['type']  
+        date_occurred = request.form['datepurchased']
+        frequency_name = request.form['frequency']  
         next_due = request.form['nextdue']
 
-        # Debug prints
+        
         print(f"Received expense form data: {name}, {value}, {type_name}, {date_occurred}, {frequency_name}, {next_due}")
 
-        # Add expense to the database
+        
         db.add_expense(name, value, type_name, date_occurred, session['id'], frequency_name, next_due)
 
-        # If no error occurred, redirect
-        return redirect('/incomeandexpenses')  # Adjust the redirect as needed
+        
+        return redirect('/incomeandexpenses')  
     except Exception as e:
-        # Print the error to the console and potentially log to a file or database
         print(f"An error occurred: {e}")
-        # Depending on your error handling, you may want to inform the user
         return str(e), 500
 
 @app.route('/delete_expense', methods=['POST'])
 def delete_expense():
     expense_id = request.form['expense_id']
-    print(expense_id)
-    print('hello')
     db.delete_expense(expense_id)
     return redirect('/incomeandexpenses')
 
 @app.route('/predict_income_expenses', methods=['GET'])
 def predict_income_expenses():
     expenses = db.predict_income_expenses(session['id'])
+    print(expenses)
     return expenses
 
 @app.route('/overall_distribution_of_expenses', methods=['GET'])
@@ -259,8 +246,8 @@ def most_recently_added():
     return data
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
-    print("is this here?")
+    app.run(port=5000, debug=False)
+    
 
 
 

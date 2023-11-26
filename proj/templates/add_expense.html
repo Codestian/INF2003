@@ -24,7 +24,7 @@
         <div class="form-group">
             <label for="expense-type">Type:</label>
             <select id="expense-type" name="type">
-                <!-- Options will be populated from the server -->
+                
                 {% for transaction in expense_types %}
                     <option value="{{ transaction.type }}">{{ transaction.type }}</option>
                 {% endfor %}

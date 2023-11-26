@@ -3,7 +3,7 @@
 <head>
     <title>Add Income</title>
     <style>
-        /* Add your CSS styling here */
+        
         .form-group {
             margin-bottom: 10px;
         }
@@ -25,7 +25,7 @@
         <div class="form-group">
             <label for="income-type">Type:</label>
             <select id="income-type" name="type">
-                <!-- Options will be populated from the server -->
+                
                 {% for transaction in income_types %}
                     <option value="{{ transaction.type }}">{{ transaction.type }}</option>
                 {% endfor %}
@@ -41,7 +41,7 @@
             <label for="frequency">Frequency:</label>
             <select id="frequency" name="frequency">
                 {% for freq in frequencies %}
-                    <!-- Ensure that the option value attribute contains the descriptive freqtype -->
+                    
                     <option value="{{ freq.freqtype }}">{{ freq.freqtype }}</option>
                 {% endfor %}
             </select>
