@@ -135,7 +135,29 @@ def add_income():
         
 
     return render_template('add_income.html', income_types=income_types, frequencies=frequencies)
+@app.route('/filter_highest_return_assets')
+def show_highest_return_assets():
 
+    assets = db.filter_highest_return_assets(session['id'])
+
+
+    return render_template('assets.html', assets=assets)
+@app.route('/filter_alphabetical')
+def show_alphabetical():
+
+    assets = db.filter_alphabetical(session['id'])
+
+
+    return render_template('assets.html', assets=assets)
+@app.route('/update_nextdue', methods=['GET', 'POST'])
+def update_nextdue():
+    db.update_nextdue()
+    incomes = db.get_all_incomes(session['id'])  # Replace with your actual function to fetch income data
+
+    # Fetch expense data
+    expenses = db.get_all_expenses(session['id'])  # Replace with your actual function to fetch expense data
+
+    return render_template('incomeandexpenses.html', incomes=incomes, expenses=expenses)
 @app.route('/save_income', methods=['POST'])
 def save_income():
     try:

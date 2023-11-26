@@ -168,8 +168,74 @@ def delete_asset(asset_id):
     cur.close()
     conn.close()
 
+def filter_highest_return_assets(userid):
+    conn = get_db_connection()
+    cur = conn.cursor()
 
+    cur.execute("""
+    SELECT 
+            assetid, 
+            name, 
+            value, 
+            amount, 
+            assettypeid, 
+            date, 
+            userid, 
+            purchaseprice,
+            value * amount AS total_value, 
+            ((value * amount) - (purchaseprice * amount)) / (purchaseprice * amount) * 100 AS profit_percentage
+        FROM 
+            assets
+        WHERE 
+            userid = ?
+        ORDER BY (value - purchaseprice) DESC
+    """, (userid,))
 
+    assets2 = cur.fetchall()
+    conn.close()
+    return assets2
+def filter_alphabetical(userid):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+    SELECT 
+            assetid, 
+            name, 
+            value, 
+            amount, 
+            assettypeid, 
+            date, 
+            userid, 
+            purchaseprice,
+            value * amount AS total_value, 
+            ((value * amount) - (purchaseprice * amount)) / (purchaseprice * amount) * 100 AS profit_percentage
+        FROM 
+            assets
+        WHERE 
+            userid = ?
+        ORDER BY Name 
+    """, (userid,))
+
+    assets3 = cur.fetchall()
+    conn.close()
+    return assets3
+def update_nextdue():
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+    UPDATE income
+    SET nextdue = (SELECT DATE(nextdue,  (SELECT freqtype FROM frequency WHERE frequency.freqid = income.freqid)))
+    WHERE date(nextdue) = date('now');""")
+    conn.commit()
+    cur.execute("""
+    UPDATE expenses
+    SET nextdue = (SELECT DATE(nextdue,  (SELECT freqtype FROM frequency WHERE frequency.freqid = expenses.frequency)))
+    WHERE date(nextdue) = date('now');""")
+    conn.commit()
+    cur.close()
+    conn.close()
 def get_all_incomes(user_id):
     conn = get_db_connection()
     cur = conn.cursor()

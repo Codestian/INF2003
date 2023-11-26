@@ -8,7 +8,7 @@
     {% include 'navbar.html' %}
 
     <div class="container mt-3">
-        <h2>API Data</h2>
+        <h2>Recently added assets/income/expenses</h2>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -28,6 +28,8 @@
         <!-- Income Table -->
         <h2>Your Income</h2>
         <button onclick="location.href='/add_income'" class="btn btn-primary mb-3">Add Income</button>
+        <button onclick="location.href='/update_nextdue'">Update nextdue Date</button>
+
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
